@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $fileName = basename($_FILES["cover_image"]["name"]);
         $targetFilePath = $targetDir . $fileName;
 
-        // رفع الصورة للمجلد
+  
         if (move_uploaded_file($_FILES["cover_image"]["tmp_name"], $targetFilePath)) {
             $cover_image = $fileName;
         }
