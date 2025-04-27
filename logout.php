@@ -1,9 +1,13 @@
 <?php
-session_start(); 
+session_start(); // Start or resume the session
 
-session_unset(); 
-session_destroy(); 
+// Unset all session variables
+$_SESSION = [];
 
+// Destroy the session
+session_destroy();
+
+// Redirect to homepage
 header("Location: index.php");
 exit();
 ?>
