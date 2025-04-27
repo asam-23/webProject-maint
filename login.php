@@ -1,43 +1,54 @@
 <?php
-session_start();
-require_once 'db_connection.php';
+session_start(); // Start a new session or resume existing
 
-$error_message = "";
+require_once 'db_connection.php'; // Include database connection
+
+$error_message = ""; // Initialize error message variable
 
 // Handle form submission
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    // Get and sanitize user input
     $username = trim($_POST["username"]);
     $password = $_POST["password"];
 
+    // Validate input
     if (!empty($username) && !empty($password)) {
+        // Prepare SQL query to select user
         $query = "SELECT id, username, password FROM users WHERE username = ?";
         $stmt = $conn->prepare($query);
         
         if ($stmt) {
-            $stmt->bind_param("s", $username);
-            $stmt->execute();
-            $result = $stmt->get_result();
+            $stmt->bind_param("s", $username); // Bind username parameter
+            $stmt->execute(); // Execute query
+            $result = $stmt->get_result(); // Get query result
 
+            // Check if exactly one user is found
             if ($result && $result->num_rows === 1) {
-                $user = $result->fetch_assoc();
+                $user = $result->fetch_assoc(); // Fetch user data
 
-                // If you hash passwords (recommended), use password_verify() instead
+                // Compare passwords (direct comparison here; hashing is recommended)
                 if ($user && $user['password'] === $password) {
+                    // Store user info in session
                     $_SESSION['user_id'] = $user['id'];
                     $_SESSION['username'] = $user['username'];
-                    
+
+                    // Redirect to books page
                     header("Location: books.php");
                     exit();
                 } else {
+                    // Password does not match
                     $error_message = "Invalid username or password.";
                 }
             } else {
+                // Username not found
                 $error_message = "Invalid username or password.";
             }
         } else {
+            // SQL preparation failed
             $error_message = "Something went wrong. Please try again later.";
         }
     } else {
+        // Missing input fields
         $error_message = "Please fill in all fields.";
     }
 }
@@ -48,29 +59,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css"> <!-- Link to external CSS -->
 </head>
 <body>
     <div class="form-container">
         <h2>Login</h2>
         
-        <?php if (!empty($error_message)): ?>
-            <p class="error"><?= htmlspecialchars($error_message) ?></p>
-        <?php endif; ?>
-        
-        <form method="POST" action="login.php">
-            <div class="input-group">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required>
-            </div>
-            <div class="input-group">
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-            <button type="submit" class="btn">Login</button>
-        </form>
-
-        <p>Don't have an account? <a href="register.php">Register here</a></p>
-    </div>
-</body>
-</html>
+        <!-- Display error message if exists -->
+        <?php if (!
