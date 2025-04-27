@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // حفظ اسم الصورة القديم لو المستخدم ما رفع صورة جديدة
     $cover_image = $book['cover_image'];
 
-    // هل المستخدم رفع صورة جديدة؟
+    // هل رفع صورة جديدة؟
     if (isset($_FILES['cover_image']) && $_FILES['cover_image']['error'] === 0) {
         $targetDir = "uploads/";
         $fileName = basename($_FILES["cover_image"]["name"]);
